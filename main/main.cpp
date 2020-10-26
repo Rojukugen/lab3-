@@ -1,62 +1,44 @@
 #include <iostream>
-#include "StackLib.h"
+#include "Queue.h"
 int main()
 {
-  // îáúÿâèòü ñòåê èç öåëûõ ÷èñåë
-  STACK <int> st1;
+  
+    Queue<int> Q1;
+    Q1.print("Q1");
 
-  st1.Print(); // st1 = { }
+    Q1.push(5);
+    Q1.print("Q1");
 
-  // +5
-  st1.push(5); // st1 = { 5 }
+    Q1.push(8);
+    Q1.push(11);
+    Q1.push(17); 
+    Q1.print("Q1");
 
-  // +9
-  st1.push(9); // st1 = { 5, 9 }
+    int d;
+    d = Q1.GetItem();
+    cout << "d = " << d << endl;
 
-  // +13
-  st1.push(13); // st1 = { 5, 9, 13 }
+    Q1.print("Q1");
 
-  // +7
-  st1.push(7); // st1 = { 5, 9, 13, 7 }
-  st1.Print();
-  cout << "Count: " << st1.Count() << endl;
+    Queue<int> Q2 = Q1;
+    Q2.print("Q2");
 
-  // ----------------------
-  STACK<int> st2;
-  st2 = st1; // âûçîâ îïåðàòîðà êîïèðîâàíèÿ
-  STACK<int> st3 = st2; // âûçîâ êîíñòðóêòîðà êîïèðîâàíèÿ
-  // ----------------------
+    Queue<int> Q3;
+    Q3 = Q1 = Q2;
+    Q1.push(333);
+    Q2.push(555);
 
-  // -1 item
-  int t;
-  t = st1.pop(); // t = 7
-  cout << "Delete item: " << t << endl;
-  st1.Print(); // 5, 9, 13
-  cout << "Head: " << st1.Head() << endl;
+    Q1.print("Q1");
+    Q2.print("Q2");
+    Q3.print("Q3");
 
-  // -2 items
-  st1.pop(); // st1 = { 5, 9 }
-  st1.pop(); // st1 = { 5 }
-  st1.Print();
+    Q2.clear();
+    if (Q2.IsEmpty())
+      cout << "OK" << endl;
+    else
+      cout << "NO" << endl;
 
-  // -2 items
-  st1.pop(); // st1 = { }
-  st1.pop();
-  st1.Print();
-
-  if (st1.IsEmpty())
-    cout << "Stack is empty." << endl;
-  else
-    cout << "Stack is not empty" << endl;
-
-  cout << "Stack st2:" << endl;
-  st2.Print();
-
-  cout << "Stack st3:" << endl;
-  st3.Print();
-
- 
-  st1 = st3 = st2;
-  st1.Print();
+    cout << "n = " << Q3.GetN() << endl;
+  
   return 0;
 }
