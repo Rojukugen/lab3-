@@ -6,7 +6,7 @@ before_script:
   - mkdir ../build
   - cd ../build
 script:
-  - cmake ../lab3-Stack_And_Queue
+  - cmake ../lab3_Stack_And_Queue
   - make -j
   - ./test/StackAndQueue_Test
 notifications:
