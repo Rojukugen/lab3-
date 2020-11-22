@@ -1,171 +1,205 @@
-﻿
-#ifndef _MY_Stack_
-#define _MY_Stack_
+﻿#pragma once
+#ifndef _Stack_
+#define _Stack_
 
 #include <iostream>
-#include <new>
+#include <fstream>
+
 using namespace std;
+
+template <typename T>
+class TStack
+{
+private:
+	T* stackPtr;                      
+	const int size;                   
+	int num;                          
+public:
+	TStack(int = 25);                  
+	TStack(const TStack<T>&);          
+	~TStack();                         
+
+
+	inline int IsEmpty(void) const; 
+	inline int IsFull(void) const; 
+	inline void put(const T&);    
+	inline T deleteElem();          
+	inline const T& Peek(int) const; 
+	inline int getStackSize() const;  
+	inline T* getPtr() const;         
+	inline int getNum() const;        
+
+	
+	inline int min_elem(); 
+	inline int max_elem();
+
+
+	friend ostream& operator<<(ostream& out, const TStack& st)
+	{
+		for (int ix = st.num - 1; ix >= 0; ix--)
+			cout << st.stackPtr[ix] << endl;
+		return out;
+	}
+
+
+};
+
+template <typename T>
+TStack<T>::TStack(int maxSize) : size(maxSize) 
+{
+	if (maxSize < 0)
+	{
+		throw  logic_error("ERROR");
+	}
+	stackPtr = new T[size]; 
+	num = 0; 
+}
+
+template <typename T> 
+inline int TStack<T>::IsEmpty() const
+{
+	return stackPtr == NULL;
+
+	for (int i = 0; i < size; i++)
+	{
+		if (stackPtr[i] == 0)
+		{
+			continue;
+		}
+		else
+		{
+			throw  logic_error("ERROR");
+		}
+
+	}
+}
+
+
+template <typename T> 
+inline int TStack<T>::IsFull() const
+{
+
+	for (int i = 0; i < size; i++)
+	{
+		if (stackPtr[i] != 0)
+		{
+			continue;
+		}
+		else
+		{
+			throw  logic_error("ERROR");
+		}
+	}
+}
+
 
 
 template <typename T>
-class STACK
+TStack<T>::TStack(const TStack<T>& otherStack) : size(otherStack.getStackSize()) 
 {
-private:
-  T* stack; // Динамический масив-указатель на стек
-  int count; // Вершина стека - количество элементов типа T в стеке
+	stackPtr = new T[size]; 
+	num = otherStack.getNum();
 
-public:
- 
-  STACK()
-  {
-    stack = NULL; // необязательно
-    count = 0; // количество элементов в стеке определяется по значению count
-  }
+	for (int ix = 0; ix < num; ix++)
+	{
+		stackPtr[ix] = otherStack.getPtr()[ix];
+	}
+}
 
-  
-  void push(T item)
-  {
-    T* tmp; // временный указатель
-
-    // блок try необходим для перехвата исключения, если память не выделится
-    try {
-      // указатель указывает на stack
-      tmp = stack;
-
-      // выделить память на 1 элемент больше, чем было выделено до этого
-      stack = new T[count + 1];
-
-      // увеличить количество элементов в стеке на 1
-      count++;
-
-      // скопировать данные из памяти, на которую указывает tmp в память,
-      // на которую указывает stack
-      for (int i = 0; i < count - 1; i++)
-        stack[i] = tmp[i];
-
-      // добавить последний элемент
-      stack[count - 1] = item;
-
-      
-      // на эту память указывает tmp
-      if (count > 1)
-        delete[] tmp;
-    }
-    catch (bad_alloc e)
-    {
-      // если память не выделилась
-      cout << e.what() << endl;
-    }
-  }
-
-  // Вытягнуть элемент из стека
-  // При вытягивании элемента из стека память не переопределяется
-  T pop()
-  {
-    if (count == 0)
-      return 0; // стек пуст
-    count--;
-    return stack[count];
-  }
-
-  // Просмотр элемента в вершине стека
-  T Head()
-  {
-    if (count == 0)
-      return 0;
-    return stack[count - 1];
-  }
+template <typename T>
+TStack<T>::~TStack()
+{
+	if (this->stackPtr != NULL)
+	{
+		delete[] stackPtr; 
+	}
+	num = 0;
+}
 
 
-  STACK(const STACK& st)
-  {
-    try {
-      // 1. Выделить новый участок памяти для массива stack
-      stack = new T[st.count];
+template <typename T>
+inline void TStack<T>::put(const T& value)
+{
+	if (num > size - 1 || num < 0)
+	{
+		throw  logic_error("ERROR");
+	}
 
-      // 2. Скопировать данные из st в текущий объект
-      count = st.count;
-      for (int i = 0; i < count; i++)
-        stack[i] = st.stack[i];
-    }
-    catch (bad_alloc e)
-    {
-      // если память не выделилась, то вывести соответствующее сообщение
-      cout << e.what() << endl;
-    }
-  }
+	stackPtr[num++] = value; 
+}
 
 
-  STACK operator=(const STACK& st)
-  {
-    // Нужно скопировать из st в текущий объект
-    // 1. Освободить предварительно выделенную память для текущего объекта
-    if (count > 0)
-    {
-      count = 0;
-      delete[] stack; // освободить память под предыдущий массив
-    }
+template <typename T>
+inline T TStack<T>::deleteElem()
+{
+	if (num < NULL)
+	{
+		throw  logic_error("ERROR");
+	}
 
-    // 2. Выделить новый участок памяти для массива stack
-    try {
-      // попытка выделить память
-      stack = new T[st.count];
+	stackPtr[--num]; 
 
-      // 3. Скопировать данные из st в текущий объект
-      count = st.count;
-      for (int i = 0; i < count; i++)
-        stack[i] = st.stack[i];
-    }
-    catch (bad_alloc e)
-    {
-      // если не удалось виделить память, то вывести соответствующее сообщение
-      cout << e.what() << endl;
-    }
+	return stackPtr[num];
+}
 
-    // 4. Вернуть текущий объект
-    return *this;
-  }
 
-  // Деструктор - освобождает память
-  ~STACK()
-  {
-    if (count > 0)
-      delete[] stack;
-  }
+template <class T>
+inline const T& TStack<T>::Peek(int Elem) const
+{
+	if (Elem > num)
+	{
+		throw  logic_error("ERROR");
+	}
+	return stackPtr[num - Elem];
+}
 
-  // Количество элементов в стеке
-  int Count()
-  {
-    return count;
-  }
+template <typename T>
+inline int TStack<T>::getStackSize() const
+{
+	return size;
+}
 
-  // Функция, которая определяет пуст ли стек
-  bool IsEmpty()
-  {
-    return count == 0;
-  }
+template <typename T>
+inline T* TStack<T>::getPtr() const
+{
+	return stackPtr;
+}
 
-  // Функция, выводящая стек
-  void Print()
-  {
-    T* p; // временный указатель, двигается по элементах стека
 
-    // 1. Установить указатель p на вершину стека
-    p = stack;
+template <typename T>
+inline int TStack<T>::getNum() const
+{
+	return num;
+}
 
-    // 2. Вивід
-    cout << "Stack: " << endl;
-    if (count == 0)
-      cout << "is empty." << endl;
 
-    for (int i = 0; i < count; i++)
-    {
-      cout << "Item[" << i << "] = " << *p << endl;
-      p++; // прокрутить указатель на следующий элемент
-    }
-    cout << endl;
-  }
-};
+template<typename T>
+inline int TStack<T>::max_elem()
+{
+	int res = stackPtr[0];
+	for (int i = 1; i < size; i++)
+	{
+		if (stackPtr[i] > res)
+		{
+			res = stackPtr[i];
+		}
+	}
+	return res;
+}
 
+
+template<typename T>
+inline int TStack<T>::min_elem()
+{
+	int res = stackPtr[0];
+	for (int i = 1; i < size; i++)
+	{
+		if (stackPtr[i] < res)
+		{
+			res = stackPtr[i];
+		}
+	}
+	return res;
+}
 
 #endif
